@@ -3,18 +3,9 @@ import Layout, { siteTitle } from '../components/layout'
 import utilStyles from '../styles/utils.module.css'
 import { getSortedPostsData } from '../lib/posts'
 import Link from 'next/link'
-import Date from '../components/date'
+// import Date from '../components/date'
 
-export async function getStaticProps() {
-    const allPostsData = getSortedPostsData()
-    return {
-      props: {
-        allPostsData
-      }
-    }
-}
-
-export default function Home({ allPostsData }) {
+export default function Home({ allPostsData }) { //allPstData comes from the getStaticProps function with the external data
   return (
     <Layout home>
       <Head>
@@ -33,7 +24,7 @@ export default function Home({ allPostsData }) {
           {allPostsData.map(({ id, date, title }) => (
             <li className={utilStyles.listItem} key={id}>
             <Link href={`/posts/${id}`}>
-              <a>{title}</a>
+              {title}
             </Link>
             <br />
             <small className={utilStyles.lightText}>
@@ -46,3 +37,28 @@ export default function Home({ allPostsData }) {
     </Layout>
   )
 }
+
+export async function getStaticProps() {
+  // Get external data from the file system, API, DB, etc.
+
+  const allPostsData = getSortedPostsData()
+
+  // The value of the `props` key will be
+  //  passed to the `Home` component
+  return {
+    props: {
+      allPostsData
+    }
+  }
+}
+// Essentially, getStaticProps allows you to tell Next.js: “Hey, this page has some data dependencies — so when you pre-render this page at build time, make sure to resolve them first!”
+
+
+/**** getStaticProps gets data on build time. So to get data on request-time, on the server side, use getServerSideProps: ****/
+// export async function getServerSideProps(context) {
+//   return {
+//     props: {
+//       // props for your component
+//     }
+//   }
+// }
